@@ -1,33 +1,36 @@
-"""
-Assuming we have a directed graph represented with an adjacency list.
-
-Example:
-graph = {'A': ['B', 'C'],
- 'B': ['D', 'E'],
- 'C': ['F'],
- 'E'
-"""
+from collections import deque
+from typing import Optional, List
 
 
-def bfsRecursive(graph: dict):
-    def bfsHelper(graph: dict, visited: set, traversed: list, queue: deque):
-        if not queue:
+class Node(object):
+    def __init__(self, val):
+        self.val = val
+        self.left = None
+        self.right = None
+
+
+def bfs_recursive(root: Optional[Node]):
+    def bfs_recursive_helper(q: Optional[deque], ans: List[int]):
+        if not q:
             return
-        cur = queue.popleft()
-        if cur not in visited:
-            traversed.append(cur)
-            visited.add(cur)
-            for nb in graph[cur]:
-                if nb not in visited:
-                    queue.append(nb)
-                    visited.add(nb)
-                    traversed.append(nb)
-        bfsHelper(graph, visited, traversed, queue)
+
+        cur = q.popleft()
+        if cur:
+            ans.append(cur.val)
+            q.append(cur.left)
+            q.append(cur.right)
+        bfs_recursive_helper(q, ans)
         return
 
-    traversed = []
-    visited = set()
-    for node in graph:
-        queue = deque([node])
-        bfsHelper(graph, visited, traversed, queue)
-    return traversed
+    q = deque([root])
+    output = []
+    bfs_recursive_helper(q, output)
+    return output
+
+root = Node(4)
+root.left = Node(9)
+root.right = Node(0)
+root.left.left = Node(5)
+root.left.right = Node(1)
+
+print(f'Recursive BFS: {bfs_recursive(root)}')
